@@ -1,10 +1,17 @@
-﻿namespace QRCodeImageGenerator.API.DataTransferObjects
+﻿using System.ComponentModel;
+
+namespace QRCodeImageGenerator.API.DataTransferObjects
 {
     public class GenerateRequestDTO
     {
-        public string Text { get; set; }
-        public string QRLogoColorHex { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        [DefaultValue("Robin Correa <robin.correa21@gmail.com>")]
+        public string Text { get; set; } = "Robin Correa <robin.correa21@gmail.com>";
+
+        [DefaultValue("#000000")]
+        public string QRLogoColorHex { get; set; } = "#000000";
+        [DefaultValue(250)]
+        public int Width { get; set; } = 250;
+        [DefaultValue(250)]
+        public int Height { get; set; } = 250;
     }
 }

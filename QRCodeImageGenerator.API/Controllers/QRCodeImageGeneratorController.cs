@@ -47,6 +47,16 @@ namespace QRCodeImageGenerator.API.Controllers
                         graphics.DrawImage(logo, new Rectangle(logoPosition, new Size(logoSize, logoSize)));
                     }
 
+                    // Change QR code logo color
+                    if (!string.IsNullOrEmpty(request.QRLogoColorHex))
+                    {
+                        // Convert hex color to Color object
+                        Color qrLogoColor = ColorTranslator.FromHtml(request.QRLogoColorHex);
+
+                        // Change color of QR code logo
+                        ChangeQRCodeColor(resizedQrCodeBitmap, qrLogoColor);
+                    }
+
                     // Convert the final image to a base64 string
                     using (var stream = new MemoryStream())
                     {
@@ -59,6 +69,20 @@ namespace QRCodeImageGenerator.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        private void ChangeQRCodeColor(Bitmap qrCodeBitmap, Color color)
+        {
+            for (int x = 0; x < qrCodeBitmap.Width; x++)
+            {
+                for (int y = 0; y < qrCodeBitmap.Height; y++)
+                {
+                    if (qrCodeBitmap.GetPixel(x, y).R < 128)
+                    {
+                        qrCodeBitmap.SetPixel(x, y, color);
+                    }
+                }
             }
         }
     }
