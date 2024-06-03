@@ -13,5 +13,8 @@ namespace QRCodeImageGenerator.API.DataTransferObjects
         public int Width { get; set; } = 250;
         [DefaultValue(250)]
         public int Height { get; set; } = 250;
+
+        [DefaultValue(false)]
+        public bool IncludeLogo { get; set; } = false;
     }
 }

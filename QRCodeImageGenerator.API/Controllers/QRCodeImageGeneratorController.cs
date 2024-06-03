@@ -27,24 +27,31 @@ namespace QRCodeImageGenerator.API.Controllers
                 PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
                 byte[] qrCodeImage = qrCode.GetGraphic(20);
 
-                // Load the logo image
+                // Load the logo image if the flag is true
+                Image logo = null;
+                if (request.IncludeLogo)
+                {
+                    logo = Image.FromFile(LogoPath);
+                }
+
+                // Load the QR code image
                 using (var ms = new MemoryStream(qrCodeImage))
                 using (var qrCodeBitmap = new Bitmap(ms))
                 {
                     // Resize the QR code to specified dimensions
                     Bitmap resizedQrCodeBitmap = new Bitmap(qrCodeBitmap, new Size(request.Width, request.Height));
 
-                    // Load the main logo image
-                    var logo = Image.FromFile(LogoPath);
-
-                    // Calculate logo size and position
-                    int logoSize = resizedQrCodeBitmap.Height / 5;
-                    var logoPosition = new Point((resizedQrCodeBitmap.Width - logoSize) / 2, (resizedQrCodeBitmap.Height - logoSize) / 2);
-
-                    // Add main logo to QR code
-                    using (var graphics = Graphics.FromImage(resizedQrCodeBitmap))
+                    if (request.IncludeLogo && logo is not null)
                     {
-                        graphics.DrawImage(logo, new Rectangle(logoPosition, new Size(logoSize, logoSize)));
+                        // Calculate logo size and position
+                        int logoSize = resizedQrCodeBitmap.Height / 5;
+                        var logoPosition = new Point((resizedQrCodeBitmap.Width - logoSize) / 2, (resizedQrCodeBitmap.Height - logoSize) / 2);
+
+                        // Add main logo to QR code
+                        using (var graphics = Graphics.FromImage(resizedQrCodeBitmap))
+                        {
+                            graphics.DrawImage(logo, new Rectangle(logoPosition, new Size(logoSize, logoSize)));
+                        }
                     }
 
                     // Change QR code logo color
